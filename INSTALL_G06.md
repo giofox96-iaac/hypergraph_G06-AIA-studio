@@ -56,9 +56,9 @@ python -m pip install -r requirements.txt -r requirements-dev.txt
 ```
 
 **2. Missing Dependency Fix:**
-The original `requirements.txt` file is missing `networkx`, which is strictly required for visualizing graphs in the Jupyter Notebook. Install it manually:
+The original `requirements.txt` file is missing several packages, which are strictly required for visualizing graphs in the Jupyter Notebook. Install them manually with this command:
 ```bash
-python -m pip install networkx
+python -m pip install networkx pydot plotly scikit-learn "numpy>=2.0" pandas --upgrade
 ```
 
 > **✅ Validation Check 2:** Let's test if the core libraries (including the .NET bridge for Rhino) installed correctly. Run this in your terminal:
@@ -154,7 +154,13 @@ In VS Code, navigate to the `notebooks` folder and open `demo.ipynb` (or `visual
 **2. Select the Kernel:**
 Ensure the active kernel in the top right corner is set to `aia_hypergraph`.
 
-**3. Run All Cells:**
+**3. Fix the JSON Path (If Needed):**
+Since executing from the root of the workspace, you may get a `FileNotFoundError` for the JSON dataset. In the cell that loads `pd.read_json()`, update the string to explicitly call the correct child path:
+```python
+df = pd.read_json('notebooks/src/sample_hypergraphs.json')
+```
+
+**4. Run All Cells:**
 Click the **"Run All"** button at the top of the notebook. The cells will send requests to your local API (running on port 8000) and generate the outputs or graph visualizations directly below each cell.
 
 > **⚠️ Important Note:** Ensure the terminal running `uvicorn` (from Step 6) remains open and active in the background while you work in the notebook!
