@@ -89,24 +89,57 @@ When you open the `notebooks/visualize_hypergraph.ipynb` file, look at the top r
 Rhino and Grasshopper require these compiled libraries to run the hypergraph algorithms. Windows blocks downloaded `.dll` files by default, which causes Grasshopper components to turn red and fail.
 
 **1. Create the target folder:**
-Ensure the folder `C:\geolib` exists on your C: drive.
+Ensure the folder `.\dlls\main` exists in your workspace.
 
 **2. Copy and Unblock:**
 Instead of unblocking them one by one manually (which is prone to human error), use this PowerShell command inside VS Code to copy and unblock everything automatically:
 
 ```powershell
 # Create the directory if it doesn't exist
-New-Item -ItemType Directory -Force -Path "C:\geolib"
+New-Item -ItemType Directory -Force -Path ".\dlls\main"
 
-# Copy all DLLs from the repository to C:\geolib
-Copy-Item -Path ".\samples\_requiredDLLs\*" -Destination "C:\geolib" -Recurse
+# Copy all DLLs from the repository to .\dlls\main
+Copy-Item -Path ".\samples\_requiredDLLs\*" -Destination ".\dlls\main" -Recurse
 
 # Unblock all copied DLLs (Crucial step for Rhino/Grasshopper)
-Get-ChildItem -Path "C:\geolib" -Recurse | Unblock-File
+Get-ChildItem -Path ".\dlls\main" -Recurse | Unblock-File
 ```
-> **✅ Validation Check 3:** Go to `C:\geolib`, right-click on one of the `.dll` files, select "Properties". If you **do not** see the "Unblock" (Annulla blocco) checkbox at the bottom, it means the script worked perfectly and the files are safe to use.
+> **âœ… Validation Check 3:** Go to `.\dlls\main`, right-click on one of the `.dll` files, select "Properties". If you **do not** see the "Unblock" (Annulla blocco) checkbox at the bottom, it means the script worked perfectly and the files are safe to use.
 
-#### Step 4: Rhino/Grasshopper Validation
+
+
+#### Step 5: Environment Variables & Database Configuration
+*(Unisci qui la parte del `.env` e la creazione del `database.json` in un unico step preparatorio prima di lanciare il server).*
+
+**1. Create the `.env` file:**
+[...]
+**2. Create the Database File:**
+Before running the server, the `RGeoLib` library requires a database file to exist.
+```powershell
+# Create the folder and an empty JSON array
+New-Item -ItemType Directory -Force -Path ".\database"
+Set-Content -Path ".\database\database.json" -Value '[]'
+```
+
+#### Step 6: Running the Local API
+*(Qui metti l'avvio di Uvicorn e il Validation Check nel browser).*
+
+#### Step 7: Running the Jupyter Notebook
+Now that the backend server is running, you can execute the hypergraph algorithms via Python.
+
+**1. Open the Notebook:**
+In VS Code, navigate to the `notebooks` folder and open `demo.ipynb` (or `visualize_hypergraph.ipynb`).
+
+**2. Select the Kernel:**
+Ensure the active kernel in the top right corner is set to `aia_hypergraph`.
+
+**3. Run All Cells:**
+Click the **"Run All"** button at the top of the notebook. The cells will send requests to your local API (running on port 8000) and generate the outputs or graph visualizations directly below each cell.
+
+> **⚠️ Important Note:** Ensure the terminal running `uvicorn` (from Step 6) remains open and active in the background while you work in the notebook!
+
+
+#### Step 8: Rhino/Grasshopper Validation
 Now we verify if the CAD software correctly reads our setup.
 
 1. Open **Rhino 7**.
@@ -114,4 +147,4 @@ Now we verify if the CAD software correctly reads our setup.
 3. Launch **Grasshopper** and open the corresponding `.gh` file.
 > **✅ Validation Check 4:** Look at the Grasshopper canvas. Are there any **Red components** (especially the C# script nodes)? 
 > - If **NO**: The installation is 100% successful! 🎉
-> - If **YES**: The C# component failed to load the DLLs. Double-check that the files are actually in `C:\geolib` and properly unblocked.
+> - If **YES**: The C# component failed to load the DLLs. Double-check that the files are actually in `.\dlls\main` and properly unblocked.
