@@ -109,12 +109,18 @@ Get-ChildItem -Path ".\dlls\main" -Recurse | Unblock-File
 
 
 #### Step 5: Environment Variables & Database Configuration
-*(Unisci qui la parte del `.env` e la creazione del `database.json` in un unico step preparatorio prima di lanciare il server).*
 
 **1. Create the `.env` file:**
-[...]
+In VS Code, look at the root folder of your project. You should see a file named `.env.example`. 
+Copy and paste it, then rename the copy to strictly `.env` (with the dot at the beginning).
+Open the `.env` file and make sure it contains this exact line:
+```env
+API_ROOT_URL=http://localhost:8000
+```
+
 **2. Create the Database File:**
-Before running the server, the `RGeoLib` library requires a database file to exist.
+Before running the server, the `RGeoLib` C# library requires a database directory and JSON file to exist.
+Run this in your VS Code terminal to create them:
 ```powershell
 # Create the folder and an empty JSON array
 New-Item -ItemType Directory -Force -Path ".\database"
@@ -122,7 +128,22 @@ Set-Content -Path ".\database\database.json" -Value '[]'
 ```
 
 #### Step 6: Running the Local API
-*(Qui metti l'avvio di Uvicorn e il Validation Check nel browser).*
+Now we launch the backend server using Uvicorn. This server must be running in the background whenever you want to test your Jupyter Notebooks or make API calls.
+
+**1. Launch the Server:**
+To start the FastAPI server, run this command in your terminal (`aia_hypergraph` environment must be active):
+```bash
+# Launch the API with hot-reloading enabled
+uvicorn api.main:api --reload
+```
+
+**2. Validation Check (The Final Test):**
+- Open your web browser and go to: `http://localhost:8000`
+  *(You should see a raw JSON response)*.
+- Then, go to: `http://localhost:8000/docs`
+  *(You should see the Swagger UI documentation page showing all the available endpoints for your hypergraph project).*
+
+> **⚠️ Important Note:** Leave this terminal running! Do not close it or press `Ctrl+C` while you are working in `notebooks/demo.ipynb` or generating hypergraphs, because the notebook needs to communicate with this local server. To stop the server when you are done working, click inside the terminal and press `Ctrl + C`.
 
 #### Step 7: Running the Jupyter Notebook
 Now that the backend server is running, you can execute the hypergraph algorithms via Python.
