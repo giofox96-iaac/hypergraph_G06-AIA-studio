@@ -16,6 +16,35 @@ conda create -n aia_hypergraph python=3.9 -y
 # Activate the environment
 conda activate aia_hypergraph
 ```
+
+#### ⚠️ Troubleshooting: "conda is not recognized as an internal or external command"
+If you have Anaconda/Miniconda installed but VS Code's PowerShell terminal doesn't recognize the `conda` command, or if it throws a red error when trying to activate the environment, you need to initialize Conda for PowerShell and allow script execution.
+
+**Fix Step 1: Initialize Conda**
+1. Close VS Code.
+2. Open the Windows Start Menu, search for **"Anaconda Prompt"** (do NOT use the standard cmd or PowerShell yet), and open it.
+3. Run this command to configure PowerShell:
+```bash
+# Initialize Conda for Windows PowerShell
+conda init powershell
+```
+4. Close the Anaconda Prompt.
+
+**Fix Step 2: Allow Script Execution (Windows Only)**
+Windows often blocks the `activate.ps1` script required to switch Conda environments.
+1. Open Windows **PowerShell** as **Administrator** (Right-click > Run as Administrator).
+2. Run this command and press `Y` when prompted:
+```powershell
+# Change the execution policy to allow local scripts to run
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+**Fix Step 3: Restart and Verify**
+1. Re-open **VS Code** and open a new terminal (`Ctrl + ò`).
+2. You should now see `(base)` appearing on the left side of your terminal prompt. This means Conda is successfully hooked to VS Code! You can now proceed with Step 1 of the installation.
+
+---
+
 > **✅ Validation Check 1:** Run `python --version` in the terminal. It MUST return `Python 3.9.x`. If it returns a different version, the environment is not active.
 
 #### Step 2: Installing Dependencies
