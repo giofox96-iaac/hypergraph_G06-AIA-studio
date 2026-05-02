@@ -48,19 +48,44 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 > **✅ Validation Check 1:** Run `python --version` in the terminal. It MUST return `Python 3.9.x`. If it returns a different version, the environment is not active.
 
 #### Step 2: Installing Dependencies
-Now we install the required packages. This is where your colleague might have faced issues (e.g., missing C++ build tools for some geometric libraries).
+Now we install the required packages. To ensure the packages are installed safely into the active environment, we use `python -m pip`. 
 
+**1. Run the installation command:**
 ```bash
-# Install base and developer requirements
-pip install -r requirements.txt -r requirements-dev.txt
+python -m pip install -r requirements.txt -r requirements-dev.txt
 ```
-> **✅ Validation Check 2:** Let's test if the core libraries installed correctly. Run this in your terminal:
-> ```bash
-> python -c "import networkx; import uvicorn; print('Dependencies installed successfully!')"
-> ```
-> If it prints the message without errors, you are good to go.
 
-#### Step 3: The C# DLLs Configuration (CRITICAL)
+**2. Missing Dependency Fix:**
+The original `requirements.txt` file is missing `networkx`, which is strictly required for visualizing graphs in the Jupyter Notebook. Install it manually:
+```bash
+python -m pip install networkx
+```
+
+> **✅ Validation Check 2:** Let's test if the core libraries (including the .NET bridge for Rhino) installed correctly. Run this in your terminal:
+> ```bash
+> python -c "import clr; import fastapi; import networkx; print('Dependencies installed successfully!')"
+> ```
+> If it prints the message without errors, your Python environment is perfectly set up.
+
+#### Step 3: Link VS Code to the Conda Environment
+Even if you installed everything correctly in the terminal, you must tell VS Code to use the `aia_hypergraph` environment, otherwise it will use your system's default Python and throw `ModuleNotFoundError`s.
+
+**1. Open the Command Palette:**
+Press `Ctrl + Shift + P` (or `Cmd + Shift + P` on Mac).
+
+**2. Select the Interpreter:**
+Type `Python: Select Interpreter` and hit Enter.
+
+**3. Choose the Conda Environment:**
+From the dropdown list, look for the one named `aia_hypergraph` (it should say something like `Python 3.9.x ('aia_hypergraph': conda)`). Click on it. 
+*(If you don't see it, click on the refresh icon in the top right of the dropdown menu).*
+
+**4. Jupyter Kernel Selection:**
+When you open the `notebooks/visualize_hypergraph.ipynb` file, look at the top right corner of the notebook window. If it doesn't say `aia_hypergraph`, click on the current kernel name, choose "Select Another Kernel...", click "Python Environments", and select your `aia_hypergraph` Conda environment.
+
+---
+
+#### Step 4: The C# DLLs Configuration (CRITICAL)
 Rhino and Grasshopper require these compiled libraries to run the hypergraph algorithms. Windows blocks downloaded `.dll` files by default, which causes Grasshopper components to turn red and fail.
 
 **1. Create the target folder:**
